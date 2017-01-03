@@ -5,8 +5,18 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = User.new(params[:user])
-    p @user
+    @user = User.new(user_params)
+    if @user.save
+      session[:user_id]=@user.id
+      redirect_to "/users/#{@user.id}"
+    else
+      flash[:notice] = "Please complete all fields."
+      redirect_to '/users/new'
+    end
   end
 
+
+  def user_params
+    params.require(:user).permit(:name, :email, :password)
+  end
 end
